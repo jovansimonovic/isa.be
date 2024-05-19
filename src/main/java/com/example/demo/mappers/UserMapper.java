@@ -26,8 +26,9 @@ public class UserMapper {
             .id(entity.getId())
             .email(entity.getEmail())
             .firstName(entity.getFirstName())
-            .lastName(entity.getLastName()).build();
-}
+            .lastName(entity.getLastName())
+            .build();
+  }
 
   public static List<UserModel> toModelList(List<User> entities) {
     var list = new ArrayList<UserModel>();
