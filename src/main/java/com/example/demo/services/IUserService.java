@@ -11,6 +11,7 @@ import com.example.demo.models.UserProductsModel;
 public interface IUserService {
   List<UserModel> findAll();
   UserPageModel findPaginatedList(PageRequest pageRequest);
-  UserModel create(UserModel model);
   List<UserProductsModel> findUserProductsAll();
+  UserModel create(UserModel model);
+  UserModel update(UserModel model);
 }

@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 @RestController
 @RequestMapping("user")
@@ -47,5 +50,13 @@ public class UserController {
 		}
 
 		return new ResponseEntity<>(userService.create(userModel), HttpStatus.CREATED);
+	}
+
+	@PostMapping("update")
+	public ResponseEntity<?> update(@RequestBody @Valid UserModel userModel, BindingResult result) {
+		if (result.hasErrors()) {
+			return new ResponseEntity<>("Neuspesno registrovan", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<>(userService.update(userModel), HttpStatus.CREATED);
 	}
 }

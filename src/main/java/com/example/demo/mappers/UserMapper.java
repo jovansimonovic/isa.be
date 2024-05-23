@@ -17,6 +17,7 @@ public class UserMapper {
     user.setFirstName(model.getFirstName());
     user.setLastName(model.getLastName());
     user.setEmail(model.getEmail());
+    user.setContactNumber(model.getContactNumber());
 
     return user;
   }
@@ -27,6 +28,7 @@ public class UserMapper {
             .email(entity.getEmail())
             .firstName(entity.getFirstName())
             .lastName(entity.getLastName())
+            .contactNumber(entity.getContactNumber())
             .build();
   }
 
