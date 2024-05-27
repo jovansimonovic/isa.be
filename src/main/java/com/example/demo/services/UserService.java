@@ -3,8 +3,10 @@ package com.example.demo.services;
 import java.util.List;
 
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.exceptions.user.UserException;
 import com.example.demo.mappers.UserMapper;
 import com.example.demo.mappers.UserProductsMapper;
 import com.example.demo.models.UserModel;
@@ -20,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 public class UserService implements IUserService {
   private final IUserRepository userRepository;
   private final IUserProductsRepository userProductsRepository;
+  private final BCryptPasswordEncoder passwordEncoder;
 
   @Override
   public List<UserModel> findAll() {
@@ -33,12 +36,19 @@ public class UserService implements IUserService {
 
   @Override
   public UserModel create(UserModel model) {
-    return UserMapper.toModel(userRepository.save(UserMapper.toEntity(model)));
+    return UserMapper.toModel(userRepository.save(UserMapper.toEntity(model, passwordEncoder)));
   }
 
   @Override
   public UserModel update(UserModel model) {
-    return UserMapper.toModel(userRepository.save(UserMapper.toEntity(model)));
+    var entity = UserMapper.toEntity(model, passwordEncoder);
+
+    try {
+      var result = userRepository.save(entity);
+      return UserMapper.toModel(result);
+    } catch (Exception e) {
+      throw new UserException(e.getMessage());
+    }
   }
 
   @Override
