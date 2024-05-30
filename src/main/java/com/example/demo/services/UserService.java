@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.exceptions.user.UserAlreadyExistsException;
 import com.example.demo.exceptions.user.UserException;
 import com.example.demo.mappers.UserMapper;
 import com.example.demo.mappers.UserProductsMapper;
@@ -36,7 +37,17 @@ public class UserService implements IUserService {
 
   @Override
   public UserModel create(UserModel model) {
-    return UserMapper.toModel(userRepository.save(UserMapper.toEntity(model, passwordEncoder)));
+    var user = UserMapper.toEntity(model, passwordEncoder);
+    var existingUser = userRepository.findByEmail(model.getEmail());
+    
+    if (existingUser.isPresent()) {
+      throw new UserAlreadyExistsException("User with email "
+        + model.getEmail() + " already exists");
+    }
+
+    var savedUser = userRepository.save(user);
+
+    return UserMapper.toModel(savedUser);
   }
 
   @Override
@@ -54,5 +65,12 @@ public class UserService implements IUserService {
   @Override
   public List<UserProductsModel> findUserProductsAll() {
     return UserProductsMapper.toModelList(userProductsRepository.findAll());
+  }
+
+  @Override
+  public void delete(Integer userId) {
+    var entity = userRepository.findById(userId)
+      .orElseThrow(() -> new UserException("User not found"));
+    userRepository.delete(entity);
   }
 }

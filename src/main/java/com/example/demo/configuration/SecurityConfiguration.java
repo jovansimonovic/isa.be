@@ -37,8 +37,8 @@ public class SecurityConfiguration {
               .addFilterBefore(
                 jwtAuthenticationFilter,
                 UsernamePasswordAuthenticationFilter.class
-              )
-              .cors(cors -> cors.configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues()));
+              );
+              // .cors(cors -> cors.configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues()));
 
       return http.build();
   }
@@ -48,7 +48,7 @@ public class SecurityConfiguration {
     CorsConfiguration configuration = new CorsConfiguration();
 
     configuration.setAllowedOrigins(List.of("http://localhost:3000"));
-    configuration.setAllowedMethods(List.of("GET", "POST"));
+    configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
     configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
 
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
