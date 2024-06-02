@@ -20,7 +20,6 @@ import java.util.List;
 @RestController
 @RequestMapping("user")
 @RequiredArgsConstructor
-@CrossOrigin("*")
 public class UserController {
 	private final IUserService userService;
 
@@ -33,7 +32,6 @@ public class UserController {
 	public List<UserProductsModel> gUserProductsList() {
 		return userService.findUserProductsAll();
 	}
-	
 
 	@GetMapping("get-page-list")
 	public UserPageModel getPageList(Integer pageNumber, Integer pageSize) {

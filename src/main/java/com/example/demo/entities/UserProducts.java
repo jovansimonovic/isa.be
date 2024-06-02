@@ -19,6 +19,6 @@ public class UserProducts {
   private String lastName;
   @Column(name = "email")
   private String email;
-  @OneToMany(mappedBy = "user_id")
+  @OneToMany(mappedBy = "userId")
   private List<Product> products;
 }

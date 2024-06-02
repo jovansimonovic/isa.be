@@ -1,5 +1,6 @@
 package com.example.demo.filters;
 
+import com.example.demo.repositories.ITokenRepository;
 import com.example.demo.services.JwtService;
 
 import jakarta.servlet.FilterChain;
@@ -26,6 +27,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
   private final JwtService jwtService;
+  private final ITokenRepository tokenRepository;
   private final UserDetailsService userDetailsService;
 
   @Override
@@ -50,18 +52,33 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       if (userEmail != null && authentication == null) {
         UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
 
+        var isTokenValid = tokenRepository.findByToken(jwt)
+          .map(t -> !t.isExpired() && !t.isRevoked())
+          .orElse(false);
+
+        var isRefreshTokenValid = false;
+        var refreshToken = tokenRepository.findByRefreshToken(jwt);
+
+        if (refreshToken.isPresent()) {
+          isRefreshTokenValid = jwtService.isTokenValid(refreshToken.get().refreshToken, userDetails);
+        }
+
+        if (!(isTokenValid || isRefreshTokenValid)) {
+          throw new AuthorizationServiceException("Token is not valid");
+        }
+
         if (jwtService.isTokenValid(jwt, userDetails)) {
           UsernamePasswordAuthenticationToken authToken =
             new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
-            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(authToken);
-            }
-          }
-
-          filterChain.doFilter(request, response);
-          } catch (Exception exception) {
-            throw new AuthorizationServiceException("Unauthorized", exception);
-          }
+          authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+          SecurityContextHolder.getContext().setAuthentication(authToken);
         }
+      }
+      
+      filterChain.doFilter(request, response);
+    } catch (Exception exception) {
+      throw new AuthorizationServiceException("Unauthorized", exception);
+    }
+  }
 }
