@@ -11,8 +11,8 @@ import com.example.demo.models.UserProductsModel;
 public interface IUserService {
   List<UserModel> findAll();
   UserPageModel findPaginatedList(PageRequest pageRequest);
-  List<UserProductsModel> findUserProductsAll();
   UserModel create(UserModel model);
   UserModel update(UserModel model);
   void delete(Integer userId);
+  List<UserProductsModel> findUserProductsAll();
 }
