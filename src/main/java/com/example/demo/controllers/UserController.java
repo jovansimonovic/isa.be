@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
 @RestController
 @RequestMapping("user")
 @RequiredArgsConstructor
@@ -29,7 +28,7 @@ public class UserController {
   }
 
 	@GetMapping("get-user-products-list")
-	public List<UserProductsModel> gUserProductsList() {
+	public List<UserProductsModel> getUserProductsList() {
 		return userService.findUserProductsAll();
 	}
 
