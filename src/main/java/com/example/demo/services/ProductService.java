@@ -19,5 +19,4 @@ public class ProductService implements IProductService {
   public List<ProductModel> findAll() {
     return ProductMapper.toModelList(productRepository.findAll());
   }
-  
 }
