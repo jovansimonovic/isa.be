@@ -134,4 +134,8 @@ public class AuthenticationService {
     .refreshToken(refreshToken)
     .build();
   }
+
+  public void logOut(Integer userId) {
+    revokeAllUserTokens(userId);
+  }
 }

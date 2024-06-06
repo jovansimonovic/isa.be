@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,5 +33,10 @@ public class AuthenticationController {
   @PostMapping("/refresh-token")
   public ResponseEntity<?> refreshToken(HttpServletRequest request, HttpServletResponse response) {
     return ResponseEntity.ok(authenticationService.refreshToken(request, response));
+  }
+
+  @GetMapping("/logout")
+  public void logOut(Integer userId) {
+    authenticationService.logOut(userId);
   }
 }

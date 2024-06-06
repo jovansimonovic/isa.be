@@ -27,18 +27,18 @@ public class SecurityConfiguration {
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-      http.csrf(csrf -> csrf.disable())
+      http.csrf(csrf -> csrf
+              .disable())
               .authorizeHttpRequests(requests -> requests
-                      .requestMatchers("/auth/**")
+                      .requestMatchers("/auth/**", "/product/**")
                       .permitAll()
                       .requestMatchers("/user/get-user-products-list").hasAnyRole(RoleConstants.EMPLOYEE)
-                      .anyRequest()
-                      .authenticated())
+                      .anyRequest().permitAll())
               .sessionManagement(management -> management
                       .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
               .authenticationProvider(authenticationProvider)
               .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-              .cors(cors -> cors.configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues()));
+              .cors(cors -> cors.configurationSource(corsConfigurationSource()));
 
     return http.build();
   }
